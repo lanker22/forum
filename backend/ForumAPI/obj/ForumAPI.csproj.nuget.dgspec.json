@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\George\\Documents\\forum\\backend\\ForumAPI\\ForumAPI.csproj": {}
+    "C:\\Users\\George\\Documents\\forum\\backend\\forumAPI\\ForumAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\George\\Documents\\forum\\backend\\ForumAPI\\ForumAPI.csproj": {
+    "C:\\Users\\George\\Documents\\forum\\backend\\forumAPI\\ForumAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\George\\Documents\\forum\\backend\\ForumAPI\\ForumAPI.csproj",
+        "projectUniqueName": "C:\\Users\\George\\Documents\\forum\\backend\\forumAPI\\ForumAPI.csproj",
         "projectName": "ForumAPI",
-        "projectPath": "C:\\Users\\George\\Documents\\forum\\backend\\ForumAPI\\ForumAPI.csproj",
+        "projectPath": "C:\\Users\\George\\Documents\\forum\\backend\\forumAPI\\ForumAPI.csproj",
         "packagesPath": "C:\\Users\\George\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\George\\Documents\\forum\\backend\\ForumAPI\\obj\\",
+        "outputPath": "C:\\Users\\George\\Documents\\forum\\backend\\forumAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\George\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -53,6 +53,22 @@
               "noWarn": [
                 "NU1605"
               ]
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[5.0.1.1, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[5.0.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
