@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ForumAPI.Models
 {
-    public class User : IdentityUser
+    public class ApplicationUser : IdentityUser
     {
         public bool IsBanned { get; set; }
     }

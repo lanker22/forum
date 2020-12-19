@@ -12,10 +12,14 @@ namespace ForumAPI.Models
         [Key]
         public int PostId { get; set; }
         public ICollection<Post> Replies { get; set; }
-        public User User { get; set; }
+        public ApplicationUser User { get; set; }
+
+        public string Content { get; set; }
+
+        public DateTime TimePosted { get; set; }
         
         [ForeignKey("User")]
-        public int UserId { get; set; }
+        public int Id { get; set; }
 
     }
 }

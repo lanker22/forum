@@ -14,12 +14,9 @@ namespace ForumAPI.Models
         public string Title { get; set; }
         public ICollection<Post> Posts { get; set; }
         public bool IsSticky { get; set; }
-        public User User { get; set; }
-
-        [ForeignKey("SubForum")]
-        public int SubForumId { get; set; }
+        public ApplicationUser User { get; set; }
 
         [ForeignKey("User")]
-        public int UserId { get; set; }
+        public int Id { get; set; }
     }
 }

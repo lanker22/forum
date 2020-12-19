@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ForumAPI.DTO.Thread
 {
-    public class ThreadUpdateCto
+    public class ThreadUpdateDto
     {
     }
 }
