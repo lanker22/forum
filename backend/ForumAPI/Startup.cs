@@ -42,9 +42,9 @@ namespace ForumAPI
             });
 
             // Entity framework
-            services.AddDbContextPool<ApplicationDbContext>(opt => opt.UseNpgsql("Default"));
-            services.AddDbContextPool<PostDbContext>(opt => opt.UseNpgsql("Default"));
-            services.AddDbContextPool<ThreadDbContext>(opt => opt.UseNpgsql("Default"));
+            services.AddDbContextPool<ApplicationDbContext>(opt => opt.UseNpgsql("Server=127.0.0.1;Port=5432;Database=postgres;User Id=postgres;Password=Rainforest00!;"));
+            services.AddDbContextPool<PostDbContext>(opt => opt.UseNpgsql("Server=127.0.0.1;Port=5432;Database=postgres;User Id=postgres;Password=Rainforest00!;"));
+            services.AddDbContextPool<ThreadDbContext>(opt => opt.UseNpgsql("Server=127.0.0.1;Port=5432;Database=postgres;User Id=postgres;Password=Rainforest00!;"));
 
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -90,6 +90,8 @@ namespace ForumAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

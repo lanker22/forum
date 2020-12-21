@@ -1,8 +1,6 @@
 ﻿using ForumAPI.Data;
 using ForumAPI.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -12,40 +10,18 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ForumAPI.Controllers
+namespace ForumAPI.Services
 {
-    public class TokenController : Controller
+    public class TokenService : ITokenService
     {
-
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        public TokenController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public TokenService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
-
-        [Route("/token")]
-        [HttpPost]
-        public async Task<IActionResult> Create(string grant_type, string username, string password)
-        {
-            if(await IsValidUsernameAndPassword(username, password))
-            {
-                return new ObjectResult(await GenerateToken(username));
-            } 
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-        public async Task<bool> IsValidUsernameAndPassword(string username, string password)
-        {
-            var user = await _userManager.FindByEmailAsync(username);
-            return await _userManager.CheckPasswordAsync(user, password);
-        }
-
-        private async Task<dynamic> GenerateToken(string username)
+        public async Task<dynamic> GenerateToken(string username)
         {
             var user = await _userManager.FindByEmailAsync(username);
             var roles = from ur in _context.UserRoles
@@ -61,7 +37,7 @@ namespace ForumAPI.Controllers
                 new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds().ToString())
             };
 
-            foreach(var role in roles)
+            foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role.Name));
             }
@@ -80,6 +56,12 @@ namespace ForumAPI.Controllers
             };
 
             return output;
+        }
+
+        public async Task<bool> IsValidUsernameAndPassword(string username, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(username);
+            return await _userManager.CheckPasswordAsync(user, password);
         }
     }
 }

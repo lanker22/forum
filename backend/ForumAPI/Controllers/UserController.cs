@@ -1,4 +1,6 @@
-﻿using ForumAPI.Models;
+﻿using ForumAPI.DTO;
+using ForumAPI.Models;
+using ForumAPI.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -8,50 +10,46 @@ using System.Threading.Tasks;
 
 namespace ForumAPI.Controllers
 {
-    [ApiController]
-    [Route("api/users/")]
-
-    public class UserController : ControllerBase
+    public class UserController : Controller
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-
-        public UserController(SignInManager<ApplicationUser> signInManager)
+        private readonly TokenService _tokenService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        public UserController(TokenService tokenService, UserManager<ApplicationUser> userManager)
         {
-            _signInManager = signInManager;
+            _tokenService = tokenService;
+            _userManager = userManager;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
-        {
-
-        }
-
-        [HttpGet("{id}", Name = "Get")]
-        public async Task<IActionResult> GetUser(int userId)
-        {
-
-        }
-
-        [Route("login")]
-        [HttpPost]
         public async Task<IActionResult> Login(UserLoginDto userLoginDto)
         {
-
+            var result = await _tokenService.IsValidUsernameAndPassword(userLoginDto.Username, userLoginDto.Password);
+            if(result == false)
+            {
+                return BadRequest("Invalid login attempt");
+            }
+            else
+            {
+                await _tokenService.GenerateToken(userLoginDto.Username);
+                return Ok();
+            }
         }
 
-        [Route("register")]
-        [HttpPost]
-        public async Task<IActionResult> Register(UserRegisterDto useRegisterDto)
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto, string userId)
         {
-
+            var user = await _userManager.FindByIdAsync(userId);
+            var result = await _userManager.ChangePasswordAsync(
+                user,
+                changePasswordDto.OldPassword,
+                changePasswordDto.NewPassword
+                );
+            if (!result.Succeeded)
+            {
+                return BadRequest(result);
+            }
+            else
+            {
+                return Ok(result);
+            }
         }
-
-        [Route("deregister")]
-        [HttpDelete]
-        public async Task<IActionResult> Delete(int userId)
-        {
-
-        }
-
     }
 }

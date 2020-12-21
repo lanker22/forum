@@ -12,11 +12,10 @@ namespace ForumAPI.Models
         [Key]
         public int ThreadId { get; set; }
         public string Title { get; set; }
-        public ICollection<Post> Posts { get; set; }
         public bool IsSticky { get; set; }
-        public ApplicationUser User { get; set; }
 
-        [ForeignKey("User")]
-        public int Id { get; set; }
+        [ForeignKey("ApplicationUser")]
+        public int ApplicationUserId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
     }
 }
