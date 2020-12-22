@@ -13,6 +13,7 @@ namespace ForumAPI.Profiles
         public UsersProfile()
         {
             CreateMap<UserLoginDto, ApplicationUser>();
+            CreateMap<UserCreateDto, ApplicationUser>();
         }
     }
 }

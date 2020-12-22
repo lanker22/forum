@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 namespace ForumAPI.Controllers
 {
+    [ApiController]
+    [Route("api/users/")]
     public class UserController : Controller
     {
         private readonly TokenService _tokenService;
@@ -20,6 +22,8 @@ namespace ForumAPI.Controllers
             _userManager = userManager;
         }
 
+        [Route("login")]
+        [HttpPost]
         public async Task<IActionResult> Login(UserLoginDto userLoginDto)
         {
             var result = await _tokenService.IsValidUsernameAndPassword(userLoginDto.Username, userLoginDto.Password);
@@ -34,6 +38,7 @@ namespace ForumAPI.Controllers
             }
         }
 
+        [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto, string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);

@@ -1,4 +1,5 @@
 ﻿using ForumAPI.DTO;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -22,12 +23,7 @@ namespace ForumAPI.Models
 
         public DateTime TimePosted { get; set; }
 
-        [ForeignKey("ApplicationUser")]
-        public int ApplicationUserId { get; set; }
-        public ApplicationUser ApplicationUser { get; set; }
-
-        [ForeignKey("Thread")]
-        public int ThreadId { get; set; }
-        public Thread Thread { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
+        public virtual Thread Thread { get; set; }
     }
 }

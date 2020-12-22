@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using ForumAPI.Services;
 
 namespace ForumAPI
 {
@@ -41,14 +42,15 @@ namespace ForumAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ForumAPI", Version = "v1" });
             });
 
+            //Add repository services
+            services.AddScoped<IAccountService, AccountService>();
+
             // Entity framework
-            services.AddDbContextPool<ApplicationDbContext>(opt => opt.UseNpgsql("Server=127.0.0.1;Port=5432;Database=postgres;User Id=postgres;Password=Rainforest00!;"));
-            services.AddDbContextPool<PostDbContext>(opt => opt.UseNpgsql("Server=127.0.0.1;Port=5432;Database=postgres;User Id=postgres;Password=Rainforest00!;"));
-            services.AddDbContextPool<ThreadDbContext>(opt => opt.UseNpgsql("Server=127.0.0.1;Port=5432;Database=postgres;User Id=postgres;Password=Rainforest00!;"));
+            services.AddDbContextPool<BaseDbContext>(opt => opt.UseNpgsql("Server=127.0.0.1;Port=5432;Database=postgres;User Id=postgres;Password=Rainforest00!;"));
 
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<BaseDbContext>()
                 .AddDefaultTokenProviders();
 
             // Authentication

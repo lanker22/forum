@@ -10,5 +10,9 @@ namespace ForumAPI.Models
     public class ApplicationUser : IdentityUser
     {
         public bool IsBanned { get; set; }
+
+        public ICollection<Post> Posts { get; set; }
+
+        public ICollection<Thread> Threads { get; set; }
     }
 }

@@ -10,9 +10,9 @@ namespace ForumAPI.Services
     public class PostService : IPostService
     {
 
-        private readonly PostDbContext _context;
+        private readonly BaseDbContext _context;
 
-        public PostService(PostDbContext context)
+        public PostService(BaseDbContext context)
         {
             _context = context;
         }

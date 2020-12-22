@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ForumAPI.DTO;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,8 @@ namespace ForumAPI.Services
 {
     public interface IAccountService
     {
-        Task<IActionResult> Register();
+        Task Register(UserCreateDto userCreateDto);
 
-        Task<IActionResult> Delete(int userId);
+        Task Delete(int userId);
     }
 }

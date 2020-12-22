@@ -7,5 +7,13 @@ namespace ForumAPI.DTO
 {
     public class PostCreateDto
     {
+        public string Content { get; set; }
+
+        public DateTime TimePosted { get; set; }
+
+        public string UserId { get; set; }
+        public int ThreadId { get; set; }
+
+
     }
 }

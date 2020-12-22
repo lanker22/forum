@@ -14,9 +14,9 @@ namespace ForumAPI.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly BaseDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        public TokenService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public TokenService(BaseDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;

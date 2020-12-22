@@ -1,4 +1,5 @@
-﻿using ForumAPI.Models;
+﻿using ForumAPI.DTO;
+using ForumAPI.Models;
 using ForumAPI.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +15,26 @@ namespace ForumAPI.Controllers
 
     public class AccountController : ControllerBase
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly TokenService _tokenService;
+        private readonly IAccountService _accountService;
 
-        public AccountController(SignInManager<ApplicationUser> signInManager, TokenService tokenService)
+        public AccountController(IAccountService accountService)
         {
-            _signInManager = signInManager;
-            _tokenService = tokenService;
+            _accountService = accountService;
+        }
+
+        [HttpPost]
+        [Route("register")]
+        public async Task<IActionResult> Register(UserCreateDto userCreateDto)
+        {
+            try
+            {
+                await _accountService.Register(userCreateDto);
+                return Ok("Success! User created");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
