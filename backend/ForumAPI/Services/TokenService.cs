@@ -1,5 +1,6 @@
 ﻿using ForumAPI.Data;
 using ForumAPI.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 
 namespace ForumAPI.Services
 {
@@ -57,6 +59,13 @@ namespace ForumAPI.Services
         {
             var user = await _userManager.FindByNameAsync(username);
             return await _userManager.CheckPasswordAsync(user, password);
+        }
+
+        public JwtSecurityToken ParseToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var parsedJwtToken = handler.ReadJwtToken(token);
+            return parsedJwtToken;
         }
     }
 }

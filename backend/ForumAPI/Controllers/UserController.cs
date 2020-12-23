@@ -35,7 +35,7 @@ namespace ForumAPI.Controllers
             {
                 var token = await _tokenService.GenerateToken(userLoginDto.Username);
                 Response.Cookies.Append("jwt", token);
-                return Ok();
+                return Ok("Success. User Logged in");
             }
         }
 

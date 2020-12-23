@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ForumAPI.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,9 +12,7 @@ namespace ForumAPI.DTO
 
         public DateTime TimePosted { get; set; }
 
-        public string UserId { get; set; }
-        public int ThreadId { get; set; }
-
-
+        public ApplicationUser User{ get; set; }
+        // public int ThreadId { get; set; }
     }
 }

@@ -45,6 +45,7 @@ namespace ForumAPI
             //Add repository services
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IPostService, PostService>();
 
             // Entity framework
             services.AddDbContextPool<BaseDbContext>(opt => opt.UseNpgsql("Server=127.0.0.1;Port=5432;Database=postgres;User Id=postgres;Password=Rainforest00!;"));
@@ -68,11 +69,9 @@ namespace ForumAPI
                 opt.RequireHttpsMetadata = true;
                 opt.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
                     ValidateLifetime = true,
-                    ValidAudience = Configuration["JWT:ValidAudience"],
-                    ValidIssuer = Configuration["JWT:ValidIssuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:SecurityKey"]))
                 };
             });
