@@ -23,7 +23,7 @@ namespace ForumAPI.Services
         }
         public async Task<dynamic> GenerateToken(string username)
         {
-            var user = await _userManager.FindByEmailAsync(username);
+            var user = await _userManager.FindByNameAsync(username);
             var roles = from ur in _context.UserRoles
                         join r in _context.Roles on ur.RoleId equals r.Id
                         where ur.UserId == user.Id
@@ -49,18 +49,13 @@ namespace ForumAPI.Services
                         SecurityAlgorithms.HmacSha256)),
                 new JwtPayload(claims));
 
-            var output = new
-            {
-                Access_Token = new JwtSecurityTokenHandler().WriteToken(token),
-                UserName = username
-            };
-
+            var output = new JwtSecurityTokenHandler().WriteToken(token);
             return output;
         }
 
         public async Task<bool> IsValidUsernameAndPassword(string username, string password)
         {
-            var user = await _userManager.FindByEmailAsync(username);
+            var user = await _userManager.FindByNameAsync(username);
             return await _userManager.CheckPasswordAsync(user, password);
         }
     }

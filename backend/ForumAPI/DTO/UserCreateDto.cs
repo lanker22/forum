@@ -9,16 +9,13 @@ namespace ForumAPI.DTO
 {
     public class UserCreateDto
     {
-        [ProtectedPersonalData]
         [Required(ErrorMessage = "Please enter your username")]
         public string Username { get; set; }
 
-        [ProtectedPersonalData]
         [Required(ErrorMessage = "Please enter your password")]
         [DataType("Password")]
         public string Password { get; set; }
 
-        [ProtectedPersonalData]
         [Required(ErrorMessage = "Please confirm your password")]
         [DataType("Password")]
         [Compare("Password")]

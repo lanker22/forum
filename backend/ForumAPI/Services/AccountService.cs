@@ -20,9 +20,24 @@ namespace ForumAPI.Services
             _userManager = userManager;
             _mapper = mapper;
         }
-        public Task Delete(int userId)
+        public async Task Delete(string username)
         {
-            throw new NotImplementedException();
+            if(username == null)
+            {
+                throw new ArgumentNullException(nameof(username));
+            }
+
+            var userToDelete = await _userManager.FindByNameAsync(username);
+            if(userToDelete == null)
+            {
+                throw new Exception("User does not exist");
+            }
+
+            var result = await _userManager.DeleteAsync(userToDelete);
+            if (!result.Succeeded)
+            {
+                throw new Exception("Deletion failed");
+            }
         }
 
         public async Task Register(UserCreateDto userCreateDto)
@@ -41,8 +56,14 @@ namespace ForumAPI.Services
             }
             else
             {
+                var password = userCreateDto.Password;
                 var userToAdd = _mapper.Map<ApplicationUser>(userCreateDto);
-                await _userManager.CreateAsync(userToAdd);
+                var result = await _userManager.CreateAsync(userToAdd, password);
+
+                if (!result.Succeeded)
+                {
+                    throw new Exception("Password not strong enough");
+                }
             }
         }
     }

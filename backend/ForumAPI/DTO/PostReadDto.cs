@@ -13,7 +13,7 @@ namespace ForumAPI.DTO
         [Required]
         public int PostId { get; set; }
         [Required]
-        public ICollection<Post> Replies { get; set; }
+        public List<string> Replies { get; set; }
         
         [Required]
         public ApplicationUser User { get; set; }

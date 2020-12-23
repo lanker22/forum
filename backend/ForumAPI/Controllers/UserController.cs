@@ -14,9 +14,9 @@ namespace ForumAPI.Controllers
     [Route("api/users/")]
     public class UserController : Controller
     {
-        private readonly TokenService _tokenService;
+        private readonly ITokenService _tokenService;
         private readonly UserManager<ApplicationUser> _userManager;
-        public UserController(TokenService tokenService, UserManager<ApplicationUser> userManager)
+        public UserController(ITokenService tokenService, UserManager<ApplicationUser> userManager)
         {
             _tokenService = tokenService;
             _userManager = userManager;
@@ -33,7 +33,8 @@ namespace ForumAPI.Controllers
             }
             else
             {
-                await _tokenService.GenerateToken(userLoginDto.Username);
+                var token = await _tokenService.GenerateToken(userLoginDto.Username);
+                Response.Cookies.Append("jwt", token);
                 return Ok();
             }
         }

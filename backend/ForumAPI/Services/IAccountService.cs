@@ -11,6 +11,6 @@ namespace ForumAPI.Services
     {
         Task Register(UserCreateDto userCreateDto);
 
-        Task Delete(int userId);
+        Task Delete(string username);
     }
 }

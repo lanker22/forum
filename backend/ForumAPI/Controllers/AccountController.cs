@@ -36,5 +36,20 @@ namespace ForumAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete]
+        [Route("delete/{username}")]
+        public async Task<IActionResult> Delete(string username)
+        {
+            try
+            {
+                await _accountService.Delete(username);
+                return Ok("User deleted");
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

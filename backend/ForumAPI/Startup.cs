@@ -44,6 +44,7 @@ namespace ForumAPI
 
             //Add repository services
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ITokenService, TokenService>();
 
             // Entity framework
             services.AddDbContextPool<BaseDbContext>(opt => opt.UseNpgsql("Server=127.0.0.1;Port=5432;Database=postgres;User Id=postgres;Password=Rainforest00!;"));
