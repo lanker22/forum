@@ -16,7 +16,7 @@ namespace ForumAPI.Services
         {
             _context = context;
         }
-        public async void CreatePost(Post post)
+        public async Task<int> AddPostToDatabase(Post post)
         {
             if(post == null)
             {
@@ -25,11 +25,11 @@ namespace ForumAPI.Services
             else
             {
                 _context.Posts.Add(post);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync();
             }
         }
 
-        public async void DeletePost(int id)
+        public async Task<int> RemovePostFromDatabase(int id)
         {
             var postToDelete = await GetPostById(id);
             if(postToDelete == null)
@@ -39,7 +39,7 @@ namespace ForumAPI.Services
             else
             {
                 _context.Posts.Remove(postToDelete);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync();
             }
         }
 
@@ -72,7 +72,7 @@ namespace ForumAPI.Services
             }
         }
 
-        public async void UpdatePost(Post postToUpdate)
+        public async Task<int> UpdatePostInDatabase(Post postToUpdate)
         {
             if(postToUpdate == null)
             {
@@ -81,7 +81,7 @@ namespace ForumAPI.Services
             else
             {
                 _context.Posts.Update(postToUpdate);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync();
             }
         }
     }

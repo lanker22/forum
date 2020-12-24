@@ -21,26 +21,23 @@ namespace ForumAPI.Controllers
         private readonly IPostService _postService;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly TokenService _tokenService;
         public PostController(IPostService postService, 
                               IMapper mapper, 
-                              UserManager<ApplicationUser> userManager, 
-                              TokenService tokenService)
+                              UserManager<ApplicationUser> userManager
+                              )
         {
             _postService = postService;
             _mapper = mapper;
             _userManager = userManager;
-            _tokenService = tokenService;
         }
 
-        [HttpDelete]
-        [Route("delete/{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeletePost(int id)
         {
             try
             {
-                await Task.Run(() => _postService.DeletePost(id));
-                return NoContent();
+                await _postService.RemovePostFromDatabase(id);
+                return Ok("Post deleted");
             }
             catch (Exception ex)
             {
@@ -49,34 +46,27 @@ namespace ForumAPI.Controllers
             }
         }
 
-        [HttpPost(Name="NewPost")]
-        [Route("new")]
+        [HttpPost("create", Name ="NewPostMethod")]
         public async Task<IActionResult> CreatePost(PostCreateDto postCreateDto)
         {
-            // access JWT token from request
-            var jwt = await HttpContext.GetTokenAsync("jwt");
-
-            // parse the token to get the payload data
-            var tokenData = _tokenService.ParseToken(jwt);
-
-            var user = tokenData.Claims.ToList();
-            
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            postCreateDto.ApplicationUser = user;
             var postToCreate = _mapper.Map<Post>(postCreateDto);
             
             try
             {
-                await Task.Run(() => _postService.CreatePost(postToCreate));
+                await _postService.AddPostToDatabase(postToCreate);
                 var postReadDto = _mapper.Map<PostReadDto>(postToCreate);
-                return CreatedAtRoute("NewPost", new { postReadDto.PostId }, postReadDto);
+                return CreatedAtRoute("NewPostMethod", new { postReadDto.PostId }, postReadDto);
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return StatusCode(500, "Internal Server Error");
             }
         }
 
-        [HttpPut]
-        [Route("editpost/{id}")]
+        [HttpPut("editpost/{id}")]
         public async Task<IActionResult> EditPost(int id, PostUpdateDto postUpdateDto)
         {
             try
@@ -89,7 +79,7 @@ namespace ForumAPI.Controllers
                 else
                 {
                     _mapper.Map(postUpdateDto, postToUpdate);
-                    await Task.Run(() => _postService.UpdatePost(postToUpdate));
+                    await _postService.UpdatePostInDatabase(postToUpdate);
                     return NoContent();
                 }
             }

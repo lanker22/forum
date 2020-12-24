@@ -12,11 +12,11 @@ namespace ForumAPI.Services
 
         Task<Post> GetPostById(int id); 
         
-        void CreatePost(Post post);
+        Task<int> AddPostToDatabase(Post post);
 
-        void DeletePost(int id);
+        Task<int> RemovePostFromDatabase(int id);
 
-        void UpdatePost(Post post);
+        Task<int> UpdatePostInDatabase(Post post);
 
         void ReplyToPost(int id, Post newPost);
     }

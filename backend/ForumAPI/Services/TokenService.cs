@@ -51,7 +51,11 @@ namespace ForumAPI.Services
                         SecurityAlgorithms.HmacSha256)),
                 new JwtPayload(claims));
 
-            var output = new JwtSecurityTokenHandler().WriteToken(token);
+            var output = new
+            {
+                access_token = new JwtSecurityTokenHandler().WriteToken(token)
+            };
+
             return output;
         }
 
@@ -59,13 +63,6 @@ namespace ForumAPI.Services
         {
             var user = await _userManager.FindByNameAsync(username);
             return await _userManager.CheckPasswordAsync(user, password);
-        }
-
-        public JwtSecurityToken ParseToken(string token)
-        {
-            var handler = new JwtSecurityTokenHandler();
-            var parsedJwtToken = handler.ReadJwtToken(token);
-            return parsedJwtToken;
         }
     }
 }

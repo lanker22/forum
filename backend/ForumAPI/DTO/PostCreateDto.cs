@@ -12,7 +12,7 @@ namespace ForumAPI.DTO
 
         public DateTime TimePosted { get; set; }
 
-        public ApplicationUser User{ get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
         // public int ThreadId { get; set; }
     }
 }
