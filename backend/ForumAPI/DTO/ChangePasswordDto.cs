@@ -18,5 +18,11 @@ namespace ForumAPI.DTO
             [Required(ErrorMessage = "Please enter your new password")]
             [DataType("Password")]
             public string NewPassword { get; set; }
+
+            [ProtectedPersonalData]
+            [Required(ErrorMessage = "Please confirm your new password")]
+            [DataType("Password")]
+            [Compare("Password")]
+            public string ConfirmNewPassword { get; set; }
         }
 }

@@ -50,9 +50,8 @@ namespace ForumAPI.Controllers
         public async Task<IActionResult> CreatePost(PostCreateDto postCreateDto)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            postCreateDto.ApplicationUser = user;
             var postToCreate = _mapper.Map<Post>(postCreateDto);
-            
+            postToCreate.ApplicationUser = user;
             try
             {
                 await _postService.AddPostToDatabase(postToCreate);

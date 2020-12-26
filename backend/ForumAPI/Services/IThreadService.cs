@@ -10,12 +10,12 @@ namespace ForumAPI.Services
     {
         IEnumerable<Thread> GetAllThreads();
 
-        IEnumerable<Post> GetAllPostsInThread(int id);
+        Task<IEnumerable<Post>> GetAllPostsInThread(int id);
 
-        Thread GetThreadById(int id);
+        Task<Thread> GetThreadById(int id);
 
-        void CreateThread(Thread thread);
+        Task<int> AddThreadToDatabase(Thread thread);
 
-        void DeleteThread(int id);
+        Task<int> RemoveThreadFromDatabase(int id);
     }
 }

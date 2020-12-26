@@ -14,9 +14,9 @@ namespace ForumAPI.Services
         
         Task<int> AddPostToDatabase(Post post);
 
-        Task<int> RemovePostFromDatabase(int id);
-
         Task<int> UpdatePostInDatabase(Post post);
+
+        Task<int> RemovePostFromDatabase(int id);
 
         void ReplyToPost(int id, Post newPost);
     }

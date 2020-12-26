@@ -7,5 +7,6 @@ namespace ForumAPI.DTO
 {
     public class ThreadCreateDto
     {
+        public string Title { get; set; }
     }
 }

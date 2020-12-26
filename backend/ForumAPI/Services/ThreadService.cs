@@ -1,4 +1,6 @@
-﻿using ForumAPI.Models;
+﻿using ForumAPI.Data;
+using ForumAPI.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,29 +10,60 @@ namespace ForumAPI.Services
 {
     public class ThreadService : IThreadService
     {
-        public void CreateThread(Thread thread)
+        private readonly BaseDbContext _context;
+        public ThreadService(BaseDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<int> AddThreadToDatabase(Thread thread)
+        {
+            if(thread == null)
+            {
+                throw new ArgumentNullException(nameof(thread));
+            }
+            else
+            {
+                await _context.Threads.AddAsync(thread);
+                return await _context.SaveChangesAsync();
+            }
         }
 
-        public void DeleteThread(int id)
+        public async Task<int> RemoveThreadFromDatabase(int id)
         {
-            throw new NotImplementedException();
+            var threadToDelete = await _context.Threads.FindAsync(id);
+            if(threadToDelete == null)
+            {
+                throw new Exception("Thread does not exist");
+            }
+            else
+            {
+                _context.Threads.Remove(threadToDelete);
+                return await _context.SaveChangesAsync();
+            }
         }
 
-        public IEnumerable<Post> GetAllPostsInThread(int id)
+        public async Task<IEnumerable<Post>> GetAllPostsInThread(int id)
         {
-            throw new NotImplementedException();
+            var thread = await GetThreadById(id);
+            return thread.Posts;
         }
 
         public IEnumerable<Thread> GetAllThreads()
         {
-            throw new NotImplementedException();
+            return _context.Threads;
         }
 
-        public Thread GetThreadById(int id)
+        public async Task<Thread> GetThreadById(int id)
         {
-            throw new NotImplementedException();
+            var threadFound = await _context.Threads.FindAsync(id);
+            if(threadFound == null)
+            {
+                throw new Exception("No thread found");
+            }
+            else
+            {
+                return threadFound;
+            }
         }
     }
 }

@@ -24,21 +24,7 @@ namespace ForumAPI.Services
             }
             else
             {
-                _context.Posts.Add(post);
-                return await _context.SaveChangesAsync();
-            }
-        }
-
-        public async Task<int> RemovePostFromDatabase(int id)
-        {
-            var postToDelete = await GetPostById(id);
-            if(postToDelete == null)
-            {
-                throw new ArgumentNullException(nameof(postToDelete));
-            } 
-            else
-            {
-                _context.Posts.Remove(postToDelete);
+                await _context.Posts.AddAsync(post);
                 return await _context.SaveChangesAsync();
             }
         }
@@ -81,6 +67,19 @@ namespace ForumAPI.Services
             else
             {
                 _context.Posts.Update(postToUpdate);
+                return await _context.SaveChangesAsync();
+            }
+        }
+        public async Task<int> RemovePostFromDatabase(int id)
+        {
+            var postToDelete = await GetPostById(id);
+            if(postToDelete == null)
+            {
+                throw new ArgumentNullException(nameof(postToDelete));
+            } 
+            else
+            {
+                _context.Posts.Remove(postToDelete);
                 return await _context.SaveChangesAsync();
             }
         }
