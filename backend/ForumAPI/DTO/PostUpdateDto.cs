@@ -10,7 +10,6 @@ namespace ForumAPI.DTO
     {
         [Required]
         public int PostId { get; set; }
-        public List<string> Replies { get; set; }
 
         [Required]
         public string Content { get; set; }

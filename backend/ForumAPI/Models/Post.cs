@@ -17,11 +17,11 @@ namespace ForumAPI.Models
         [Key]
         public int PostId { get; set; }
 
-        public List<string> Replies { get; set; }
-
         public string Content { get; set; }
 
         public DateTime TimePosted { get; set; }
+
+        public int Likes { get; set; }
 
         public virtual ApplicationUser ApplicationUser { get; set; }
         public virtual Thread Thread { get; set; }

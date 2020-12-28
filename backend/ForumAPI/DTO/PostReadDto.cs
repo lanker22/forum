@@ -14,12 +14,12 @@ namespace ForumAPI.DTO
         public int PostId { get; set; }
         
         [Required]
-        public List<string> Replies { get; set; }
-        
-        [Required]
         public string Content { get; set; }
 
         [Required]
         public DateTime TimePosted { get; set; }
+
+        [Required]
+        public ApplicationUser ApplicationUser { get; set; }
     }
 }

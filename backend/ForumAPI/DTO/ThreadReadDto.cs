@@ -11,7 +11,13 @@ namespace ForumAPI.DTO
         public int ThreadId { get; set; }
 
         public string Title { get; set; }
+    
+        public DateTime LastUpdated { get; set; }
+
+        public int Replies { get; set; }
+
+        public DateTime TimeCreated { get; set; }
         
-        public List<Post> Posts { get; set; }        
+        public List<PostReadDto> Posts { get; set; }        
     }
 }

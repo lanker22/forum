@@ -15,6 +15,8 @@ namespace ForumAPI.Models
         public string Title { get; set; }
         public bool IsSticky { get; set; }
 
+        public ApplicationUser ApplicationUser { get; set;}
+
         public ICollection<Post> Posts { get; set; }
     }
 }

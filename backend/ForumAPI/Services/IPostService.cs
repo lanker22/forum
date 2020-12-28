@@ -18,6 +18,8 @@ namespace ForumAPI.Services
 
         Task<int> RemovePostFromDatabase(int id);
 
-        void ReplyToPost(int id, Post newPost);
+        Task<int> ReplyToPost(int id, Post newPost);
+
+        Task<Post> LikePost(int id);
     }
 }

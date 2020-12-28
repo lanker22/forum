@@ -39,25 +39,6 @@ namespace ForumAPI.Services
             return await _context.Posts.FindAsync(id);
         }
 
-        public async void ReplyToPost(int postToReplyToId, Post newPost)
-        {
-            var postToReplyTo = await GetPostById(postToReplyToId);
-
-            if(postToReplyTo == null)
-            {
-                throw new ArgumentNullException(nameof(postToReplyTo));
-            }
-            else if(newPost == null)
-            {
-                throw new ArgumentNullException(nameof(newPost));
-            }
-            else
-            {
-                var postReplyChain = postToReplyTo.Replies;
-                postReplyChain.Add(newPost.Content);
-            }
-        }
-
         public async Task<int> UpdatePostInDatabase(Post postToUpdate)
         {
             if(postToUpdate == null)
@@ -81,6 +62,36 @@ namespace ForumAPI.Services
             {
                 _context.Posts.Remove(postToDelete);
                 return await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<int> ReplyToPost(int id, Post newPost)
+        {
+            var postToReplyTo = await GetPostById(id);
+            if(postToReplyTo == null)
+            {
+                throw new Exception("Post does not exist");
+            }
+            else
+            {
+                _context.Posts.Update(newPost);
+                return await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<Post> LikePost(int id)
+        {
+            var postToLike = await GetPostById(id);
+            if(postToLike == null)
+            {
+                throw new Exception("Post does not exist");
+            }
+            else
+            {
+                postToLike.Likes += 1;
+                _context.Update(postToLike);
+                await _context.SaveChangesAsync();
+                return postToLike;
             }
         }
     }

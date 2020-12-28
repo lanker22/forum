@@ -28,10 +28,5 @@ namespace ForumAPI.Services
                 return await _userManager.UpdateAsync(userToBan);
             }
         }
-
-        public void RemoveThread(int threadId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

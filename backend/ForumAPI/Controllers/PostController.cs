@@ -88,6 +88,21 @@ namespace ForumAPI.Controllers
                 return StatusCode(500);
             }
         }
+
+        [HttpPut("like/{id}")]
+        public async Task<IActionResult> LikePost(int id)
+        {
+            try
+            {
+                var postToLike = await _postService.LikePost(id);
+                return Ok(postToLike);
+            }            
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
     

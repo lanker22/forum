@@ -30,7 +30,7 @@ namespace ForumAPI.Services
 
         public async Task<int> RemoveThreadFromDatabase(int id)
         {
-            var threadToDelete = await _context.Threads.FindAsync(id);
+            var threadToDelete = await GetThreadById(id);
             if(threadToDelete == null)
             {
                 throw new Exception("Thread does not exist");
