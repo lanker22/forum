@@ -38,6 +38,14 @@ namespace ForumAPI.Controllers
                 return Ok("Success. User Logged in");
             }
         }
+        
+        [Route("logout")]
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("jwt");
+            return Ok("Success! Logged out");
+        }
 
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto, string userId)

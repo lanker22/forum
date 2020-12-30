@@ -17,5 +17,9 @@ namespace ForumAPI.Services
         Task<int> AddThreadToDatabase(Thread thread);
 
         Task<int> RemoveThreadFromDatabase(int id);
+
+        IEnumerable<Thread> SortThreadsByReplies();
+
+        IEnumerable<Thread> GetThreadsWithNoReplies();
     }
 }

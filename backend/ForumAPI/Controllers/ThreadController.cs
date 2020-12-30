@@ -3,6 +3,7 @@ using ForumAPI.DTO;
 using ForumAPI.Models;
 using ForumAPI.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -49,7 +50,7 @@ namespace ForumAPI.Controllers
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500, "Internal server error");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -63,7 +64,56 @@ namespace ForumAPI.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetThread(int id)
+        {
+            try
+            {
+                var thread = await _threadService.GetThreadById(id);
+                var threadReadDto = _mapper.Map<ThreadReadDto>(thread);
+                return Ok(threadReadDto);
+            } 
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("sort/repliesdescending")]
+        public IActionResult SortThreadsByReplies()
+        {
+            try
+            {
+                var threads = _threadService.SortThreadsByReplies();
+                var threadsToDisplay = threads.Select(x => _mapper.Map<ThreadReadDto>(x));
+                return Ok(threadsToDisplay);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("sort/noreplies")]
+        public IActionResult SortByNoReplies()
+        {
+            try
+            {
+                var threads = _threadService.GetThreadsWithNoReplies();
+                var threadsToDisplay = threads.Select(x => _mapper.Map<ThreadReadDto>(x));
+                return Ok(threadsToDisplay);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
     }

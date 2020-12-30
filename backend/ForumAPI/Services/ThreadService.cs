@@ -65,5 +65,23 @@ namespace ForumAPI.Services
                 return threadFound;
             }
         }
+
+        public IEnumerable<Thread> SortThreadsByReplies()
+        {
+            return _context.Threads.OrderByDescending(x => x.Posts.Count);
+        }
+
+        public IEnumerable<Thread> GetThreadsWithNoReplies()
+        {
+            var thread = _context.Threads.Where(x => x.Posts.Count == 0);
+            if(thread == null)
+            {
+                throw new Exception("Thread does not exist");
+            }
+            else
+            {
+                return thread;
+            }
+        }
     }
 }

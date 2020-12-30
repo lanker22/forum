@@ -4,6 +4,7 @@ using ForumAPI.Models;
 using ForumAPI.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -42,7 +43,7 @@ namespace ForumAPI.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -61,7 +62,7 @@ namespace ForumAPI.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500, "Internal Server Error");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -85,7 +86,7 @@ namespace ForumAPI.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return StatusCode(500);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -100,7 +101,7 @@ namespace ForumAPI.Controllers
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return BadRequest(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
     }
