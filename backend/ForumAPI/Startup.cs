@@ -42,6 +42,15 @@ namespace ForumAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ForumAPI", Version = "v1" });
             });
 
+            //CORS
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder => 
+            {
+                builder.SetIsOriginAllowed((host) => true)
+                    .AllowAnyHeader()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            }));
+
             //Add repository services
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ITokenService, TokenService>();
@@ -89,6 +98,8 @@ namespace ForumAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ForumAPI v1"));
             }
+
+            app.UseCors("MyPolicy");
 
             app.UseHttpsRedirection();
 

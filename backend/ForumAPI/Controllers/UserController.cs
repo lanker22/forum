@@ -1,6 +1,7 @@
 ﻿using ForumAPI.DTO;
 using ForumAPI.Models;
 using ForumAPI.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,8 +23,7 @@ namespace ForumAPI.Controllers
             _userManager = userManager;
         }
 
-        [Route("login")]
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto userLoginDto)
         {
             var result = await _tokenService.IsValidUsernameAndPassword(userLoginDto.Username, userLoginDto.Password);
@@ -33,24 +33,29 @@ namespace ForumAPI.Controllers
             }
             else
             {
+                var options = new CookieOptions();
+                options.HttpOnly = true;
+
                 var token = await _tokenService.GenerateToken(userLoginDto.Username);
-                Response.Cookies.Append("jwt", token.access_token);
-                return Ok("Success. User Logged in");
+                Response.Cookies.Append("jwt", token.access_token, options);
+                return StatusCode(200, userLoginDto.Username);
             }
         }
         
-        [Route("logout")]
-        [HttpGet]
+        [HttpGet("logout")]
         public IActionResult Logout()
         {
-            Response.Cookies.Delete("jwt");
+            var options = new CookieOptions();
+            options.Expires = DateTimeOffset.FromUnixTimeMilliseconds(-10);
+
+            Response.Cookies.Append("jwt", "", options);
             return Ok("Success! Logged out");
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto, string userId)
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto, string username)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByNameAsync(username);
             var result = await _userManager.ChangePasswordAsync(
                 user,
                 changePasswordDto.OldPassword,
@@ -64,6 +69,13 @@ namespace ForumAPI.Controllers
             {
                 return Ok(result);
             }
+        }
+
+        [HttpGet("verify")]
+        public async Task<IActionResult> VerifyUser()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            return StatusCode(StatusCodes.Status200OK, user);
         }
     }
 }
