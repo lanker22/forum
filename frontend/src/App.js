@@ -1,25 +1,24 @@
-import React from 'react';
-import ThreadPreviewList from "./components/ThreadPreviewList";
-import Sidebar from "./components/Sidebar";
-import Search from "./components/Search";
-import NewThread from "./components/NewThread";
+import React, { useState } from 'react';
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import UserContext from "./components/UserContext";
+import Home from "./components/Home";
 import Login from "./components/Login";
-import ChangePassword from "./components/ChangePassword";
-import UserProfile from "./components/UserProfile";
 
 function App() {
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   return (
-    <div className="App">
-      <div className="container">
-        <div class="main-body p-0">
-          <div class="inner-wrapper">
-            <Search />
-            <Sidebar />
-            <ThreadPreviewList />
-          </div>
-        </div>
+      <div className="App">
+        <UserContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+          <BrowserRouter>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route exact path="/login" component={Login} />
+            </Switch>
+          </BrowserRouter>
+        </UserContext.Provider>
       </div>
-    </div>
   );
 }
 

@@ -1,9 +1,9 @@
 import React from 'react'
 
-var ChangePassword = () => {
-    return (
-        x
-    )
-}
+// var ChangePassword = () => {
+//     return (
+        
+//     )
+// }
 
-export default ChangePassword;
+// export default ChangePassword;

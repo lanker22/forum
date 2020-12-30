@@ -19,7 +19,7 @@ var NewThread = () => {
                         </div>
                         <textarea className="form-control summernote" style="display: none;"></textarea>
 
-                        <div className="custom-file form-control-sm mt-3" style="max-width: 300px;">
+                        <div className="custom-file form-control-sm mt-3" style={{ maxWidth: 300 }}>
                             <input type="file" className="custom-file-input" id="customFile" multiple="" />
                             <label className="custom-file-label" for="customFile">Attachment</label>
                         </div>

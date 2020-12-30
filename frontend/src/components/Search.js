@@ -7,8 +7,6 @@ var Search = () => {
         <select className="custom-select custom-select-sm w-auto mr-1">
             <option selected="">Latest</option>
             <option value="1">Popular</option>
-            <option value="3">Solved</option>
-            <option value="3">Unsolved</option>
             <option value="3">No Replies Yet</option>
         </select>
         <span className="input-icon input-icon-sm ml-auto w-auto">
