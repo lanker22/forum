@@ -1,10 +1,9 @@
-import React, { useContext } from "react";
-import UserContext from "./UserContext";
+import React, { useState } from "react";
 
 var Sidebar = () => {
-  const { auth, user } = useContext(UserContext);
-  const [isAuthenticated, setIsAuthenticated] = auth;
-  const [applicationUser, setApplicationUser] = user;
+
+  const [authenticated, setAuthenticated] = useState(localStorage.getItem("authenticated"));
+  const [username, setUsername] = useState(localStorage.getItem("username"));
 
   const logout = async () => {
     var url = "http://localhost:5000/api/users/logout";
@@ -19,8 +18,10 @@ var Sidebar = () => {
       return alert("Something went wrong. Try again.");
     } else {
       try {
-        setIsAuthenticated(false);
-        setApplicationUser("");
+        localStorage.removeItem("authenticated");
+        localStorage.setItem("username", "");
+        setAuthenticated(false);
+        setUsername("");
       } catch (err) {
         console.log(err.Message);
         return alert("Something went wrong. Try again");
@@ -69,10 +70,10 @@ var Sidebar = () => {
                   style={{ height: 100 }}
                 >
                   <div className="simplebar-content" style={{ padding: 16 }}>
-                    {isAuthenticated ? (
+                    {authenticated !== false ? (
                       <nav className="nav nav-pills nav-gap-y-1 flex-column">
                         <span className="nav-link nav-link-faded has-icon">
-                          {applicationUser}
+                          {username}
                         </span>
                         <a
                           href="/"

@@ -1,26 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import UserContext from "./components/UserContext";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import Register from "./components/Register";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [applicationUser, setApplicationUser] = useState("");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    
     const verifyToken = async () => {
       const response = await fetch("http://localhost:5000/api/users/verify", {
         credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       if (response.status !== 200) {
-        setIsAuthenticated(false);
-        setApplicationUser("");
+        localStorage.setItem("authenticated", false)
+        localStorage.setItem("username", false);
       } else {
         try {
-          var data = await response.json();
-          console.log(data);
+          var data = await response.text();
+          localStorage.setItem("authenticated", true)
+          localStorage.setItem("username", data);
         } catch (err) {
           console.log(err);
         }
@@ -31,12 +33,6 @@ function App() {
 
   return (
     <div className="App">
-      <UserContext.Provider
-        value={{
-          auth: [isAuthenticated, setIsAuthenticated],
-          user: [applicationUser, setApplicationUser],
-        }}
-      >
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={Home} />
@@ -44,7 +40,6 @@ function App() {
             <Route exact path="/register" component={Register} />
           </Switch>
         </BrowserRouter>
-      </UserContext.Provider>
     </div>
   );
 }

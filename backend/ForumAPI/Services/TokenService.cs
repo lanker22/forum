@@ -47,7 +47,7 @@ namespace ForumAPI.Services
             var token = new JwtSecurityToken(
                 new JwtHeader(
                     new SigningCredentials(
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ouNtF8Xds1jE55/d+iVZ99u0f2U6lQ+AHdiPFwjVW3o=")),
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretsecretsecretsecret")),
                         SecurityAlgorithms.HmacSha256)),
                 new JwtPayload(claims));
 

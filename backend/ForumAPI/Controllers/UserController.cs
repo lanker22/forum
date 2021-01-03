@@ -1,6 +1,7 @@
 ﻿using ForumAPI.DTO;
 using ForumAPI.Models;
 using ForumAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +38,7 @@ namespace ForumAPI.Controllers
                 options.HttpOnly = true;
 
                 var token = await _tokenService.GenerateToken(userLoginDto.Username);
-                Response.Cookies.Append("jwt", token.access_token, options);
+                Response.Cookies.Append("access_token", token.access_token, options);
                 return StatusCode(200, userLoginDto.Username);
             }
         }
@@ -48,7 +49,7 @@ namespace ForumAPI.Controllers
             var options = new CookieOptions();
             options.Expires = DateTimeOffset.FromUnixTimeMilliseconds(-10);
 
-            Response.Cookies.Append("jwt", "", options);
+            Response.Cookies.Append("access_token", "", options);
             return Ok("Success! Logged out");
         }
 
@@ -75,7 +76,11 @@ namespace ForumAPI.Controllers
         public async Task<IActionResult> VerifyUser()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            return StatusCode(StatusCodes.Status200OK, user);
+            if(user == null)
+            {
+                return BadRequest();
+            }
+            return Ok(user.UserName);
         }
     }
 }

@@ -1,14 +1,10 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import UserContext from "./UserContext";
 
 var Login = () => {
   const history = useHistory();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { auth, user } = useContext(UserContext);
-  const [isAuthenticated, setIsAuthenticated] = auth;
-  const [applicationUser, setApplicationUser] = user;
 
   const requestOptions = {
     method: "POST",
@@ -32,8 +28,8 @@ var Login = () => {
     } else {
       try {
         var data = await response.text();
-        setIsAuthenticated(true);
-        setApplicationUser(data);
+        localStorage.setItem("authenticated", true)
+        localStorage.setItem("username", data);
         history.push("/");
       } catch (err) {
         alert("Something went wrong. Try again");
