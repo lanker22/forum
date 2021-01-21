@@ -1,10 +1,12 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
+import UserContext from "./UserContext";
 
 var Login = () => {
   const history = useHistory();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [user, setUser] = useContext(UserContext);
 
   const requestOptions = {
     method: "POST",
@@ -28,8 +30,8 @@ var Login = () => {
     } else {
       try {
         var data = await response.text();
-        localStorage.setItem("authenticated", true)
-        localStorage.setItem("username", data);
+        localStorage.setItem("user", data);
+        setUser(data);
         history.push("/");
       } catch (err) {
         alert("Something went wrong. Try again");
@@ -49,7 +51,7 @@ var Login = () => {
               className="form-control"
               placeholder="Username"
               required
-              autofocus
+              autoFocus
               onChange={(e) => setUsername(e.target.value)}
               value={username}
             />

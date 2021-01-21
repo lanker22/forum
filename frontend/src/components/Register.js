@@ -26,9 +26,8 @@ var Register = () => {
     e.preventDefault();
     var response = await fetch(url, requestOptions);
     if (response.status !== 200) {
-      var errors = await response.json();
-      console.log(errors);
-      return alert(`Login error: ${errors.title}`);
+      console.log(response);
+      return alert("Login validation error");
     } else {
       try {
         history.push("/login");
@@ -50,7 +49,7 @@ var Register = () => {
               className="form-control"
               placeholder="Username"
               required
-              autofocus
+              autoFocus
               onChange={(e) => setUsername(e.target.value)}
               value={username}
             />

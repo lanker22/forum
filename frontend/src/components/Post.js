@@ -1,6 +1,44 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import moment from "moment";
+import UserContext from "./UserContext";
 
-var Post = () => {
+var Post = (props) => {
+  var [user, setUser] = useContext(UserContext);
+  const [postData, setPostData] = useState(props.post);
+
+  var timePosted = moment
+    .utc(props.post.timePosted)
+    .format("dddd, MMMM Do, h:mm a");
+
+  const [hasUserLikedPost, setHasUserLikedPost] = useState(() => {
+    postData.likes.forEach((item) => {
+      console.log(item);
+      if (item.applicationUser.userName === user) {
+        return true;
+      }
+    });
+    return false;
+  });
+
+  var likePost = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/post/like/${props.post.postId}`,
+        {
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+      setPostData(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="card mb-2">
       <div className="card-body">
@@ -12,34 +50,31 @@ var Post = () => {
               width="50"
               alt="User"
             />
-            <small className="d-block text-center text-muted">Newbie</small>
           </a>
           <div className="media-body ml-3">
-            <a href="" className="text-secondary">
-              Mokrani
-            </a>
-            <small className="text-muted ml-2">1 hour ago</small>
-            <h5 className="mt-1">Realtime fetching data</h5>
+            <span className="text-secondary">
+              {postData.applicationUser.userName}
+            </span>
             <div className="mt-3 font-size-sm">
-              <p>Hellooo :)</p>
-              <p>
-                I'm newbie with laravel and i want to fetch data from database
-                in realtime for my dashboard anaytics and i found a solution
-                with ajax but it dosen't work if any one have a simple solution
-                it will be helpful
-              </p>
-              <p>Thank</p>
+              <p>{postData.content}</p>
+              <small className="text-muted">{timePosted}</small>
             </div>
           </div>
           <div className="text-muted small text-center">
             <span className="d-none d-sm-inline-block">
-              <i className="far fa-eye"></i> 19
-            </span>
-            <span>
-              <i className="far fa-comment ml-2"></i> 3
+              <i className="far fa-eye"></i> {postData.likes.length}
             </span>
           </div>
         </div>
+        {user === "" ? (
+          ""
+        ) : hasUserLikedPost ? (
+          <small>Liked</small>
+        ) : (
+          <button className="btn btn-primary" onClick={likePost}>
+            Like
+          </button>
+        )}
       </div>
     </div>
   );

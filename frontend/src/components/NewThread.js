@@ -1,6 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 var NewThread = () => {
+  const history = useHistory();
+  const [threadTitle, setThreadTitle] = useState();
+  const [openingPost, setOpeningPost] = useState();
+
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      Title: threadTitle,
+      OpeningPost: openingPost,
+      TimeCreated: new Date().toISOString(),
+    }),
+    credentials: "include",
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await fetch("http://localhost:5000/api/thread/create", requestOptions);
+      window.$("#threadModal").modal("hide");
+      history.push("/");
+      history.go(0);
+    } catch (err) {
+      console.log(err);
+      return alert("Something went wrong. Please try again");
+    }
+  };
+
   return (
     <div
       className="modal fade"
@@ -12,7 +43,7 @@ var NewThread = () => {
     >
       <div className="modal-dialog modal-lg" role="document">
         <div className="modal-content">
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="modal-header d-flex align-items-center bg-primary text-white">
               <h6 className="modal-title mb-0" id="threadModalLabel">
                 New Discussion
@@ -28,41 +59,39 @@ var NewThread = () => {
             </div>
             <div className="modal-body">
               <div className="form-group">
-                <label for="threadTitle">Title</label>
+                <label htmlFor="threadTitle">Title</label>
                 <input
                   type="text"
                   className="form-control"
                   id="threadTitle"
                   placeholder="Enter title"
-                  autofocus=""
+                  autoFocus=""
+                  required
+                  value={threadTitle}
+                  onChange={(e) => setThreadTitle(e.target.value)}
                 />
-              </div>
-              <textarea className="form-control summernote"></textarea>
-
-              <div
-                className="custom-file form-control-sm mt-3"
-                style={{ maxWidth: 300 }}
-              >
+                <label htmlFor="openingPost">Opening post</label>
                 <input
-                  type="file"
-                  className="custom-file-input"
-                  id="customFile"
-                  multiple=""
+                  type="text"
+                  className="form-control"
+                  id="openingPost"
+                  placeholder="Enter OP"
+                  autoFocus=""
+                  required
+                  value={openingPost}
+                  onChange={(e) => setOpeningPost(e.target.value)}
                 />
-                <label className="custom-file-label" for="customFile">
-                  Attachment
-                </label>
               </div>
             </div>
             <div className="modal-footer">
               <button
-                type="button"
+                type="submit"
                 className="btn btn-light"
                 data-dismiss="modal"
               >
                 Cancel
               </button>
-              <button type="button" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary">
                 Post
               </button>
             </div>

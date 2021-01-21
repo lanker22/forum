@@ -1,6 +1,12 @@
 import React from "react";
 
-var Search = () => {
+var Search = (props) => {
+  console.log(props);
+
+  const handleSelect = (e) => {
+    props.option.setThreadSortOption(e.target.value);
+  };
+
   return (
     <div className="inner-main-header">
       <a
@@ -10,10 +16,14 @@ var Search = () => {
       >
         <i className="material-icons">arrow_forward_ios</i>
       </a>
-      <select className="custom-select custom-select-sm w-auto mr-1">
-        <option selected="">Latest</option>
-        <option value="1">Popular</option>
-        <option value="3">No Replies Yet</option>
+      <select
+        value={props.option.threadSortOption}
+        onChange={handleSelect}
+        className="custom-select custom-select-sm w-auto mr-1"
+      >
+        <option value="recent">Latest</option>
+        <option value="popular">Popular</option>
+        <option value="noreplies">No Replies Yet</option>
       </select>
       <span className="input-icon input-icon-sm ml-auto w-auto">
         <input
