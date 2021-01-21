@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using ForumAPI.Services;
+using Newtonsoft.Json;
 
 namespace ForumAPI
 {

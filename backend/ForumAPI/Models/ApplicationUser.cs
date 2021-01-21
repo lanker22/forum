@@ -11,8 +11,10 @@ namespace ForumAPI.Models
     {
         public bool IsBanned { get; set; }
 
-        public ICollection<Post> Posts { get; set; }
+        public virtual ICollection<Post> Posts { get; set; }
 
-        public ICollection<Thread> Threads { get; set; }
+        public virtual ICollection<Thread> Threads { get; set; }
+
+        public ICollection<Like> Likes { get; set; }
     }
 }

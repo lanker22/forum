@@ -23,14 +23,41 @@ namespace ForumAPI.Controllers
         private readonly IPostService _postService;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IThreadService _threadService;
         public PostController(IPostService postService, 
                               IMapper mapper, 
-                              UserManager<ApplicationUser> userManager
+                              UserManager<ApplicationUser> userManager,
+                              IThreadService threadService
                               )
         {
             _postService = postService;
             _mapper = mapper;
             _userManager = userManager;
+            _threadService = threadService;
+        }
+
+        [HttpGet("all")]
+        public IActionResult GetAllPosts()
+        {
+            var posts = _postService.GetAllPosts();
+            return Ok(posts);
+        }
+
+        [HttpGet("{id}", Name ="GetPostById")]
+        public async Task<IActionResult> GetPostById(int id)
+        {
+            try
+            {
+                var post = await _postService.GetPostById(id);
+                var postReadDto = _mapper.Map<PostReadDto>(post);
+                return Ok(postReadDto);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return BadRequest();
+            }
         }
 
         [HttpDelete("delete/{id}")]
@@ -52,17 +79,19 @@ namespace ForumAPI.Controllers
         public async Task<IActionResult> CreatePost(PostCreateDto postCreateDto)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            var thread = await _threadService.GetThreadById(postCreateDto.ThreadId);
             var postToCreate = _mapper.Map<Post>(postCreateDto);
-            postToCreate.ApplicationUser = user;
+            postToCreate.Thread = thread;
+
             try
             {
-                await _postService.AddPostToDatabase(postToCreate);
-                var postReadDto = _mapper.Map<PostReadDto>(postToCreate);
-                return CreatedAtRoute("NewPostMethod", new { postReadDto.PostId }, postReadDto);
+                await _postService.AddPostToDatabase(postToCreate, user);
+                var threadReadDto = _mapper.Map<ThreadReadDto>(thread);
+                return Ok(threadReadDto);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -91,15 +120,17 @@ namespace ForumAPI.Controllers
             }
         }
 
-        [HttpPut("like/{id}")]
+        [HttpGet("like/{id}")]
         public async Task<IActionResult> LikePost(int id)
         {
             try
             {
-                var postToLike = await _postService.LikePost(id);
-                return Ok(postToLike);
-            }            
-            catch(Exception ex)
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                var post = await _postService.LikePost(id, user);
+                var postReadDto = _mapper.Map<PostReadDto>(post);
+                return Ok(postReadDto);
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);

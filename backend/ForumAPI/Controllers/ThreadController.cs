@@ -14,20 +14,47 @@ using System.Threading.Tasks;
 namespace ForumAPI.Controllers
 {
     [ApiController]
-    [Route("api/thread/")]
+    [Route("api/thread/", Name = "ThreadController")]
     public class ThreadController : Controller
     {
         private readonly IThreadService _threadService;
+
+        private readonly IPostService _postService;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         
         public ThreadController(IThreadService threadService, 
                                 IMapper mapper, 
-                                UserManager<ApplicationUser> userManager)
+                                UserManager<ApplicationUser> userManager,
+                                IPostService postService)
         {
             _threadService = threadService;
             _mapper = mapper;
             _userManager = userManager;
+            _postService = postService;
+        }
+
+        [HttpGet("recent", Name = "GetMostRecentThreads")]
+        public IActionResult GetAllThreadsByMostRecentPost()
+        {
+            var threads = _threadService.SortThreadsByMostRecentPost();
+            
+            // NOTE: PUT THIS INTO METHOD IN THREADSERVICE CLASS
+            var threadsDisplay = threads.Select(x => _mapper.Map<ThreadReadDto>(x)).ToList();
+
+            return Ok(threadsDisplay);
+        }
+
+
+        [HttpGet("popular", Name = "GetMostPopularThreads")]
+        public IActionResult GetAllThreadsByPopularity()
+        {
+            var threads = _threadService.SortThreadsByReplies();
+
+            // NOTE: PUT THIS INTO METHOD IN THREADSERVICE CLASS
+            var threadsDisplay = threads.Select(x => _mapper.Map<ThreadReadDto>(x)).ToList();
+
+            return Ok(threadsDisplay);
         }
 
         [HttpPost("create", Name="AddThread")]
@@ -39,17 +66,30 @@ namespace ForumAPI.Controllers
                 var user = await _userManager.GetUserAsync(HttpContext.User);
 
                 var threadToAdd = _mapper.Map<Thread>(threadCreateDto);
-                
+
                 // set thread creator to current logged in user
                 threadToAdd.ApplicationUser = user;
 
                 await _threadService.AddThreadToDatabase(threadToAdd);
-                var threadReadDto = _mapper.Map<ThreadReadDto>(threadToAdd);    
-                return CreatedAtRoute("AddThread", new { threadReadDto.ThreadId }, threadReadDto);
+
+                // create opening post 
+                var openingPostCreateDto = new PostCreateDto
+                {
+                    Content = threadCreateDto.OpeningPost,
+                    TimePosted = threadCreateDto.TimeCreated
+                };
+
+                var openingPost = _mapper.Map<Post>(openingPostCreateDto);
+
+                openingPost.Thread = threadToAdd;
+
+                await _postService.AddPostToDatabase(openingPost, user);
+
+                return GetAllThreadsByMostRecentPost();
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -69,7 +109,7 @@ namespace ForumAPI.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name ="GetThreadById")]
         public async Task<IActionResult> GetThread(int id)
         {
             try
@@ -80,34 +120,18 @@ namespace ForumAPI.Controllers
             } 
             catch(Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
-        [HttpGet("sort/repliesdescending")]
-        public IActionResult SortThreadsByReplies()
-        {
-            try
-            {
-                var threads = _threadService.SortThreadsByReplies();
-                var threadsToDisplay = threads.Select(x => _mapper.Map<ThreadReadDto>(x));
-                return Ok(threadsToDisplay);
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        [HttpGet("sort/noreplies")]
+        [HttpGet("noreplies")]
         public IActionResult SortByNoReplies()
         {
             try
             {
                 var threads = _threadService.GetThreadsWithNoReplies();
-                var threadsToDisplay = threads.Select(x => _mapper.Map<ThreadReadDto>(x));
+                var threadsToDisplay = threads.Select(x => _mapper.Map<ThreadReadDto>(x)).ToList();
                 return Ok(threadsToDisplay);
             }
             catch(Exception ex)

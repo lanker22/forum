@@ -8,9 +8,9 @@ namespace ForumAPI.Services
 {
     public interface IThreadService
     {
-        IEnumerable<Thread> GetAllThreads();
+        List<Thread> GetAllThreads();
 
-        Task<IEnumerable<Post>> GetAllPostsInThread(int id);
+        Task<List<Post>> GetAllPostsInThread(int id);
 
         Task<Thread> GetThreadById(int id);
 
@@ -18,8 +18,10 @@ namespace ForumAPI.Services
 
         Task<int> RemoveThreadFromDatabase(int id);
 
-        IEnumerable<Thread> SortThreadsByReplies();
+        List<Thread> SortThreadsByReplies();
 
-        IEnumerable<Thread> GetThreadsWithNoReplies();
+        List<Thread> GetThreadsWithNoReplies();
+
+        List<Thread> SortThreadsByMostRecentPost();
     }
 }

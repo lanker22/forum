@@ -14,8 +14,10 @@ namespace ForumAPI.Data
         {
 
         }
-        public DbSet<Post> Posts { get; set; }
+        public virtual DbSet<Post> Posts { get; set; }
 
-        public DbSet<Thread> Threads { get; set; }
+        public virtual DbSet<Thread> Threads { get; set; }
+
+        public virtual DbSet<Like> Likes { get; set; }
     }
 }

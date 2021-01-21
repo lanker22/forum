@@ -20,6 +20,9 @@ namespace ForumAPI.DTO
         public DateTime TimePosted { get; set; }
 
         [Required]
-        public ApplicationUser ApplicationUser { get; set; }
+        public List<LikeReadDto> Likes { get; set; }
+
+        [Required]
+        public ApplicationUserReadDto ApplicationUser { get; set; }
     }
 }

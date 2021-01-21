@@ -21,7 +21,7 @@ namespace ForumAPI.Models
 
         public DateTime TimePosted { get; set; }
 
-        public int Likes { get; set; }
+        public ICollection<Like> Likes { get; set; }
 
         public virtual ApplicationUser ApplicationUser { get; set; }
         public virtual Thread Thread { get; set; }

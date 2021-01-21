@@ -8,18 +8,16 @@ namespace ForumAPI.Services
 {
     public interface IPostService
     {
-        IEnumerable<Post> GetAllPosts();
+        List<Post> GetAllPosts();
 
         Task<Post> GetPostById(int id); 
         
-        Task<int> AddPostToDatabase(Post post);
+        Task<int> AddPostToDatabase(Post post, ApplicationUser user);
 
         Task<int> UpdatePostInDatabase(Post post);
 
         Task<int> RemovePostFromDatabase(int id);
 
-        Task<int> ReplyToPost(int id, Post newPost);
-
-        Task<Post> LikePost(int id);
+        Task<Post> LikePost(int id, ApplicationUser user);
     }
 }

@@ -13,10 +13,8 @@ namespace ForumAPI.Models
         [Key]
         public int ThreadId { get; set; }
         public string Title { get; set; }
-        public bool IsSticky { get; set; }
 
-        public ApplicationUser ApplicationUser { get; set;}
-
-        public ICollection<Post> Posts { get; set; }
+        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
     }
 }

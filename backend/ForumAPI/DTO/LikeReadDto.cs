@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace ForumAPI.DTO
 {
-    public class ThreadUpdateDto
+    public class LikeReadDto
     {
-        public int ThreadId { get; set; }
-        public string UpdatedTitle { get; set; }
-
+        public ApplicationUserReadDto ApplicationUser { get; set; }
     }
 }
+

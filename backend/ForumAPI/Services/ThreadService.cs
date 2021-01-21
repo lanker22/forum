@@ -1,6 +1,7 @@
 ﻿using ForumAPI.Data;
 using ForumAPI.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,21 +43,36 @@ namespace ForumAPI.Services
             }
         }
 
-        public async Task<IEnumerable<Post>> GetAllPostsInThread(int id)
+        public async Task<List<Post>> GetAllPostsInThread(int id)
         {
             var thread = await GetThreadById(id);
-            return thread.Posts;
+            return thread.Posts.ToList();
         }
 
-        public IEnumerable<Thread> GetAllThreads()
+        public List<Thread> GetAllThreads()
         {
-            return _context.Threads;
+            var threads = _context.Threads
+                .Include(thread => thread.Posts)
+                .Include(thread => thread.ApplicationUser)
+                .ToList();
+
+            return threads;
         }
 
         public async Task<Thread> GetThreadById(int id)
         {
-            var threadFound = await _context.Threads.FindAsync(id);
-            if(threadFound == null)
+            var threadFound = await _context.Threads
+                .Include(x => x.ApplicationUser)
+                .Include(x => x.Posts)
+                .ThenInclude(p => p.ApplicationUser)
+                .Include(x => x.Posts)
+                .ThenInclude(p => p.Likes)
+                .ThenInclude(l => l.ApplicationUser)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(i => i.ThreadId == id);
+                
+
+            if (threadFound == null)
             {
                 throw new Exception("No thread found");
             }
@@ -66,22 +82,24 @@ namespace ForumAPI.Services
             }
         }
 
-        public IEnumerable<Thread> SortThreadsByReplies()
+        public List<Thread> SortThreadsByReplies()
         {
-            return _context.Threads.OrderByDescending(x => x.Posts.Count);
+            return GetAllThreads().OrderByDescending(x => x.Posts.Count).ToList();
         }
 
-        public IEnumerable<Thread> GetThreadsWithNoReplies()
+        public List<Thread> GetThreadsWithNoReplies()
         {
-            var thread = _context.Threads.Where(x => x.Posts.Count == 0);
-            if(thread == null)
-            {
-                throw new Exception("Thread does not exist");
-            }
-            else
-            {
-                return thread;
-            }
+            var threadsWithNoReplies = GetAllThreads().Where(x => x.Posts.Count == 1).ToList();
+            return threadsWithNoReplies;
+        }
+
+        public List<Thread> SortThreadsByMostRecentPost()
+        {
+            var threads = GetAllThreads()
+                .OrderByDescending(x => x.Posts.Max(x => x.TimePosted))
+                .ToList();
+
+            return threads;
         }
     }
 }

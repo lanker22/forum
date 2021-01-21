@@ -9,6 +9,9 @@ namespace ForumAPI.DTO
     {
         public string Title { get; set; }
 
+        public string OpeningPost {get; set;}
         public DateTime TimeCreated { get; set; }
+
+        public int ThreadId { get; set; }
     }
 }

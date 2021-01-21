@@ -1,5 +1,6 @@
 ﻿using ForumAPI.Data;
 using ForumAPI.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace ForumAPI.Services
         {
             _context = context;
         }
-        public async Task<int> AddPostToDatabase(Post post)
+        public async Task<int> AddPostToDatabase(Post post, ApplicationUser user)
         {
             if(post == null)
             {
@@ -24,19 +25,23 @@ namespace ForumAPI.Services
             }
             else
             {
+                post.ApplicationUser = user;
+                
                 await _context.Posts.AddAsync(post);
                 return await _context.SaveChangesAsync();
             }
         }
 
-        public IEnumerable<Post> GetAllPosts()
-        {
-            return _context.Posts;
-        }
-
         public async Task<Post> GetPostById(int id)
         {
-            return await _context.Posts.FindAsync(id);
+            var postFound = await _context.Posts
+                .Include(x => x.ApplicationUser)
+                .Include(x => x.Likes)
+                .ThenInclude(l => l.ApplicationUser)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(i => i.PostId == id);
+            
+            return postFound;
         }
 
         public async Task<int> UpdatePostInDatabase(Post postToUpdate)
@@ -64,35 +69,34 @@ namespace ForumAPI.Services
                 return await _context.SaveChangesAsync();
             }
         }
-
-        public async Task<int> ReplyToPost(int id, Post newPost)
-        {
-            var postToReplyTo = await GetPostById(id);
-            if(postToReplyTo == null)
-            {
-                throw new Exception("Post does not exist");
-            }
-            else
-            {
-                _context.Posts.Update(newPost);
-                return await _context.SaveChangesAsync();
-            }
-        }
-
-        public async Task<Post> LikePost(int id)
+        public async Task<Post> LikePost(int id, ApplicationUser user)
         {
             var postToLike = await GetPostById(id);
-            if(postToLike == null)
+            if (postToLike == null)
             {
                 throw new Exception("Post does not exist");
             }
             else
             {
-                postToLike.Likes += 1;
-                _context.Update(postToLike);
+                if(!postToLike.Likes.Select(x => x.ApplicationUser).Contains(user))
+                {
+                    var like = new Like() { ApplicationUser = user, Post = postToLike };
+                    await _context.Likes.AddAsync(like);
+                }
                 await _context.SaveChangesAsync();
                 return postToLike;
             }
+        }
+
+        public List<Like> GetUsersThatHaveLikedPost(int id)
+        {
+            var likes = _context.Likes.Where(x => x.Post.PostId == id).ToList();
+            return likes;
+        }
+
+        public List<Post> GetAllPosts()
+        {
+            return _context.Posts.ToList();
         }
     }
 }
