@@ -10,6 +10,8 @@ var ThreadPreview = (props) => {
 
   const threadToLinkTo = `/thread/${props.thread.threadId}`;
 
+  console.log(props);
+
   return (
     <div className="card mb-2">
       <div className="card-body p-2 p-sm-3">

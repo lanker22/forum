@@ -36,7 +36,6 @@ namespace ForumAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -44,7 +43,7 @@ namespace ForumAPI
             });
 
             //CORS
-            services.AddCors(o => o.AddPolicy("MyPolicy", builder => 
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
                 builder.SetIsOriginAllowed((host) => true)
                     .AllowAnyHeader()
@@ -59,7 +58,7 @@ namespace ForumAPI
             services.AddScoped<IThreadService, ThreadService>();
 
             // Entity framework
-            services.AddDbContextPool<BaseDbContext>(opt => opt.UseNpgsql("Server=127.0.0.1;Port=5432;Database=postgres;User Id=postgres;Password=Rainforest00!;"));
+            services.AddDbContextPool<BaseDbContext>(opt => opt.UseNpgsql(Environment.GetEnvironmentVariable("DB_CON")));
 
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -83,7 +82,7 @@ namespace ForumAPI
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretsecretsecretsecret")),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"))),
                     ValidateIssuerSigningKey = true
                 };
                 opt.Events = new JwtBearerEvents

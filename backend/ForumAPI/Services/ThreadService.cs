@@ -12,13 +12,15 @@ namespace ForumAPI.Services
     public class ThreadService : IThreadService
     {
         private readonly BaseDbContext _context;
+
         public ThreadService(BaseDbContext context)
         {
             _context = context;
         }
+
         public async Task<int> AddThreadToDatabase(Thread thread)
         {
-            if(thread == null)
+            if (thread == null)
             {
                 throw new ArgumentNullException(nameof(thread));
             }
@@ -32,7 +34,7 @@ namespace ForumAPI.Services
         public async Task<int> RemoveThreadFromDatabase(int id)
         {
             var threadToDelete = await GetThreadById(id);
-            if(threadToDelete == null)
+            if (threadToDelete == null)
             {
                 throw new Exception("Thread does not exist");
             }
@@ -52,8 +54,8 @@ namespace ForumAPI.Services
         public List<Thread> GetAllThreads()
         {
             var threads = _context.Threads
-                .Include(thread => thread.Posts)
-                .Include(thread => thread.ApplicationUser)
+                .Include(t => t.Posts).ThenInclude(p => p.ApplicationUser)
+                .Include(t => t.ApplicationUser)
                 .ToList();
 
             return threads;
@@ -62,15 +64,11 @@ namespace ForumAPI.Services
         public async Task<Thread> GetThreadById(int id)
         {
             var threadFound = await _context.Threads
-                .Include(x => x.ApplicationUser)
-                .Include(x => x.Posts)
-                .ThenInclude(p => p.ApplicationUser)
-                .Include(x => x.Posts)
-                .ThenInclude(p => p.Likes)
-                .ThenInclude(l => l.ApplicationUser)
+                .Include(t => t.ApplicationUser)
+                .Include(t => t.Posts).ThenInclude(p => p.ApplicationUser)
+                .Include(t => t.Posts).ThenInclude(p => p.Likes).ThenInclude(l => l.ApplicationUser)
                 .AsSplitQuery()
                 .FirstOrDefaultAsync(i => i.ThreadId == id);
-                
 
             if (threadFound == null)
             {

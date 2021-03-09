@@ -18,11 +18,13 @@ namespace ForumAPI.Services
     {
         private readonly BaseDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+
         public TokenService(BaseDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
+
         public async Task<dynamic> GenerateToken(string username)
         {
             var user = await _userManager.FindByNameAsync(username);
@@ -47,7 +49,7 @@ namespace ForumAPI.Services
             var token = new JwtSecurityToken(
                 new JwtHeader(
                     new SigningCredentials(
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secretsecretsecretsecret")),
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"))),
                         SecurityAlgorithms.HmacSha256)),
                 new JwtPayload(claims));
 

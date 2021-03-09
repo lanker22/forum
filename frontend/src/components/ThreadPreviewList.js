@@ -4,6 +4,7 @@ import Loading from "./Loading";
 
 var ThreadPreviewList = (props) => {
   const [threads, setThreads] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const fetchThreads = async () => {
     const response = await fetch(
@@ -18,6 +19,7 @@ var ThreadPreviewList = (props) => {
     try {
       const data = await response.json();
       setThreads(data);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -29,7 +31,7 @@ var ThreadPreviewList = (props) => {
 
   return (
     <div className="inner-main-body p-2 p-sm-3 collapse forum-content show">
-      {threads.length > 0 ? (
+      {loading == false ? (
         threads.map((thread) => (
           <ThreadPreview key={thread.threadId} thread={thread} />
         ))
